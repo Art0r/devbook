@@ -1,11 +1,13 @@
 package controllers
 
 import (
+	"devbook-api/src/authenticate"
 	"devbook-api/src/db"
 	"devbook-api/src/models"
 	"devbook-api/src/repositories"
 	"devbook-api/src/responses"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -103,6 +105,17 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	userIdToken, err := authenticate.ExtractUserID(r)
+	if err != nil {
+		responses.Error(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	if id != userIdToken {
+		responses.Error(w, http.StatusForbidden, errors.New("Não é possível atualizar um usuário que não seja o seu!"))
+		return
+	}
+
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.Error(w, http.StatusUnprocessableEntity, err)
@@ -141,6 +154,17 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseUint(params["id"], 10, 64)
 	if err != nil {
 		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	userIdToken, err := authenticate.ExtractUserID(r)
+	if err != nil {
+		responses.Error(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	if id != userIdToken {
+		responses.Error(w, http.StatusForbidden, errors.New("Não é possível deletar um usuário que não seja seu"))
 		return
 	}
 
