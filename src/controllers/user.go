@@ -6,6 +6,7 @@ import (
 	"devbook-api/src/models"
 	"devbook-api/src/repositories"
 	"devbook-api/src/responses"
+	"devbook-api/src/security"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
@@ -112,7 +113,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if id != userIdToken {
-		responses.Error(w, http.StatusForbidden, errors.New("Não é possível atualizar um usuário que não seja o seu!"))
+		responses.Error(w, http.StatusForbidden, errors.New("não é possível atualizar um usuário que não seja o seu"))
 		return
 	}
 
@@ -164,7 +165,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if id != userIdToken {
-		responses.Error(w, http.StatusForbidden, errors.New("Não é possível deletar um usuário que não seja seu"))
+		responses.Error(w, http.StatusForbidden, errors.New("não é possível deletar um usuário que não seja seu"))
 		return
 	}
 
@@ -177,6 +178,189 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	repository := repositories.NewRepositoryFromUsers(db)
 	if err = repository.Delete(id); err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusNoContent, nil)
+}
+
+func FollowUser(w http.ResponseWriter, r *http.Request) {
+	fid, err := authenticate.ExtractUserID(r)
+	if err != nil {
+		responses.Error(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	params := mux.Vars(r)
+	uid, err := strconv.ParseUint(params["id"], 10, 64)
+	if err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if fid == uid {
+		responses.Error(w, http.StatusForbidden, errors.New("não é possível seguir a você mesmo"))
+		return
+	}
+
+	db, err := db.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewRepositoryFromUsers(db)
+	if err := repository.Follow(uid, fid); err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusNoContent, nil)
+}
+
+func UnfollowUser(w http.ResponseWriter, r *http.Request) {
+	fid, err := authenticate.ExtractUserID(r)
+	if err != nil {
+		responses.Error(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	params := mux.Vars(r)
+	uid, err := strconv.ParseUint(params["id"], 10, 64)
+	if err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if fid == uid {
+		responses.Error(w, http.StatusForbidden, errors.New("não é possível para de seguir a você mesmo"))
+		return
+	}
+
+	db, err := db.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewRepositoryFromUsers(db)
+	if err := repository.Unfollow(uid, fid); err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusNoContent, nil)
+}
+
+func GetFollowers(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	uid, err := strconv.ParseUint(params["id"], 10, 64)
+	if err != nil {
+		responses.Error(w, http.StatusBadGateway, err)
+		return
+	}
+
+	db, err := db.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewRepositoryFromUsers(db)
+	followers, err := repository.SearchFollowers(uid)
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	responses.JSON(w, http.StatusOK, followers)
+}
+
+func GetFollowing(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	uid, err := strconv.ParseUint(params["id"], 10, 64)
+	if err != nil {
+		responses.Error(w, http.StatusBadGateway, err)
+		return
+	}
+
+	db, err := db.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewRepositoryFromUsers(db)
+	users, err := repository.SearchFollowing(uid)
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	responses.JSON(w, http.StatusOK, users)
+}
+
+func UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	uidToken, err := authenticate.ExtractUserID(r)
+	if err != nil {
+		responses.Error(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	params := mux.Vars(r)
+	uid, err := strconv.ParseUint(params["id"], 10, 64)
+	if err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if uidToken != uid {
+		responses.Error(w, http.StatusForbidden, errors.New("não é possível atualizar uma senha que não seja o seu"))
+		return
+	}
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		responses.Error(w, http.StatusBadGateway, err)
+		return
+	}
+
+	var password models.Password
+	if err := json.Unmarshal(body, &password); err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := db.Connect()
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewRepositoryFromUsers(db)
+	oldPassword, err := repository.SearchPassword(uid)
+	if err != nil {
+		responses.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if err = security.VerifyPassword(password.This, oldPassword); err != nil {
+		responses.Error(w, http.StatusUnauthorized, errors.New("a senha atual não condiz com a que está salva no banco"))
+		return
+	}
+
+	hashedPassword, err := security.HashPassword(password.New)
+	if err != nil {
+		responses.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	if err = repository.UpdatePassword(uid, string(hashedPassword)); err != nil {
 		responses.Error(w, http.StatusInternalServerError, err)
 		return
 	}

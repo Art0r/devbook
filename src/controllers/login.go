@@ -8,7 +8,6 @@ import (
 	"devbook-api/src/responses"
 	"devbook-api/src/security"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -45,7 +44,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(result.ID)
 	token, err := authenticate.CreateToken(result.ID)
 	if err != nil {
 		responses.Error(w, http.StatusInternalServerError, err)
