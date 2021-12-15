@@ -14,6 +14,16 @@ CREATE TABLE users(
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
 ) ENGINE=INNODB;
 
+CREATE TABLE posts(
+    id int AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(50) not NULL,
+    content VARCHAR(300) not NULL,
+    author_id int NOT NULL,
+    likes int DEFAULT 0,
+    createdAt timestamp DEFAULT current_timestamp(),
+    foreign key (author_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=INNODB;
+
 CREATE TABLE followers(
     user_id INT NOT NULL, 
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -36,12 +46,9 @@ VALUES
 (2, 3),
 (1, 3);
 
-CREATE TABLE posts(
-    id int AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(50) not NULL,
-    content VARCHAR(300) not NULL,
-    author_id int NOT NULL,
-    likes int DEFAULT 0,
-    createdAt timestamp DEFAULT current_timestamp(),
-    foreign key (author_id) REFERENCES users(id) ON DELETE CASCADE
-) ENGINE=INNODB;
+INSERT INTO posts(title, content, author_id)
+VALUES
+("post1", "post1 content by user 1", 1),
+("post2", "post2 content by user 2", 2),
+("post3", "post3 content by user 3", 3),
+("post4", "post1 content by user 1", 1);
