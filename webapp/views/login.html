@@ -9,13 +9,19 @@
 </head>
 <body>
     <div class="container-login">
-        <form id="login" class="devbook-form" action="" method="post">
-            <span>Seja bem vindo ao Devbook</span>
-            <input type="text" name="email" id="email" placeholder="Digite o seu email" required="required">
-            <input type="password" name="password" id="password" placeholder="Digite o sua senha" required="required">
-            <a href="#">Clique aqui para criar sua conta</a>
-            <button type="submit" class="btn-devbook">Login</button>
-        </form>     
+        <div>
+            <form id="login" class="devbook-form" action="" method="post">
+                <span>Seja bem vinde ao Devbook</span>
+                <div>
+                    <input type="text" name="email" id="email" placeholder="Digite o seu email" required="required">
+                </div>
+                <div>
+                    <input type="password" name="password" id="password" placeholder="Digite o sua senha" required="required">
+                </div> 
+                <a href="/createuser">Criar conta</a>
+                <button type="submit" class="btn-devbook">Login</button>
+            </form>   
+        </div>
     </div>
 </body>
 </html>
