@@ -1,9 +1,6 @@
-const submitBt = document.getElementById("submitBt");
-submitBt.addEventListener("click", function(event){
-    data(event);
-});
+$('#signup-form').on('submit', Signup)
 
-function data(event){
+function Signup(event){
     event.preventDefault();
     const name = document.getElementById("name").value;
     const nick = document.getElementById("nick").value;
@@ -16,14 +13,23 @@ function data(event){
         return
     }
 
+    const url = "/user";
+    const data = {
+        name,        
+        email,        
+        nick,        
+        password     
+    }
+
     $.ajax({
         type: "POST",
-        url: "/user",
-        data: {
-            name: name,
-            email: email,
-            nick: nick,
-            password: password
-        },
+        url: url,
+        data: data
+    }).done(() => {
+        alert("Usuário cadastrado com sucesso")
+    }).fail((err) => {
+        console.log(err)
+        alert("Erro ao cadastrar o usuário")
     });
+
 }
