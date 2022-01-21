@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devbook</title>
+    <link rel="stylesheet" href="/assets/css/login.css">
+    
+</head>
+<body>
+    <div class="container-login">
+        <div>
+            <form id="signup-form" class="devbook-form" onsubmit="Signup()">
+                <span>Criar conta</span>
+                <div>
+                    <input type="text" name="name" id="name" placeholder="Digite o seu nome" required="required">
+                </div>
+                <div>
+                    <input type="text" name="nick" id="nick" placeholder="Digite o seu nome de usuário" required="required">
+                </div>
+                <div>
+                    <input type="text" name="email" id="email" placeholder="Digite o seu email" required="required">
+                </div>
+                <div>
+                    <input type="password" name="password" id="password" placeholder="Digite o sua senha" required="required">
+                </div>
+                <div>
+                    <input type="password" name="repassword" id="repassword" placeholder="Digite o sua senha novamente" required="required">
+                </div>  
+                <a href="/login">Fazer login</a>
+                <button type="submit" class="btn-devbook">Cadastrar</button>
+            </form>   
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/js/signup.js"></script>
+
+</html>

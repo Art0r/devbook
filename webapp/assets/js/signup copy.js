@@ -1,32 +1,30 @@
-document.getElementById('signup-form').addEventListener("submit", function(event){
+$('#signup-form').on('submit', Signup)
+
+function Signup(event){
     event.preventDefault();
     const name = document.getElementById("name").value;
     const nick = document.getElementById("nick").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     const repassword =  document.getElementById("repassword").value;
-    
+
     if (password != repassword) {
         alert("As senhas devem ser iguais");
         return
     }
-    
-    const url = "http://localhost:3000/user";
+
+    const url = "/user";
     const data = {
         name,        
         email,        
         nick,        
         password     
     }
-    
-    const request = {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-            'Content-type': 'application/json'
-        }
+    const headers = {
+        'Content-Type': 'application/json'
     }
-       
+
+    /*
     $.ajax({
         type: "POST",
         url: url,
@@ -37,18 +35,17 @@ document.getElementById('signup-form').addEventListener("submit", function(event
         console.log(err)
         alert("Erro ao cadastrar o usuário")
     });
+    */
 
-    /*
-    fetch(url, request)
-    .then(response => response.json())
-    .then((json) => {
-        if (json.error) {
-            alert(json.error);
-        }
+    console.log(name)
+
+    fetch(url, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(data)
     })
-    .catch(err => {
-        console.log(err);
-        alert("Erro ao cadastrar o usuário");
-    });*/
-});
+    .then(response => response.json())
+    .then(json => console.log(json))
+    .catch(err => console.log(err));
 
+}
