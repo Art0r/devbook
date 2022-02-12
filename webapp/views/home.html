@@ -35,15 +35,12 @@
                 </fieldset>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">
-                {{ range . }}
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">{{ .Title }}</h4>
-                            <p class="card-text">{{ .Content }}</p>
-                            <a href="#">{{ .AuthorNick}} - {{ .CreatedAt }}</a>
-                            <a href="#" class="btn btn-primary">See Profile</a>
-                          </div>
-                    </div>
+                {{ range .Posts }}
+                    {{ if (eq .AuthorId $.UserId) }}
+                        {{ template "post-with" . }}
+                    {{ else }}
+                        {{ template "post-without" . }}
+                    {{ end }}
                 {{ end }}
             </div>
         </div>
@@ -52,5 +49,4 @@
 </body>
     
     {{ template "scripts" }}
-    <script src="/assets/js/createPost.js"></script>
 </html>

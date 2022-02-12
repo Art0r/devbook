@@ -1,0 +1,64 @@
+<!--
+    <div class="card">
+    <div class="card-body">        
+
+            {{ if (eq .AuthorId $.UserId) }}
+                <small>Like, edit and delete</small>
+            {{ else }}
+                <small>Like</small>
+            {{ end }}
+        
+        </div>        
+    </div>
+-->
+
+{{ define "likes" }}
+    <a href="/like" style="text-decoration: none;">
+        <i class="fa-solid fa-heart"></i>
+    </a>
+    <span>{{ .Likes }}</span>
+{{ end }}
+
+{{ define "edit" }}   
+    <a href="/edit" style="text-decoration: none;">
+        <i class="fa-solid fa-pen-to-square"></i>
+    </a>
+{{ end }}
+
+{{ define "delete" }}
+    <a href="/delete" style="text-decoration: none;">
+        <i class="fa-solid fa-trash text-danger"></i>
+    </a>
+{{ end }}
+
+{{ define "post-header" }}
+    <h4 class="card-title">{{ .Title }}</h4>
+    <p class="card-text">{{ .Content }}</p>
+    <a href="#">{{ .AuthorNick}} - {{ .CreatedAt.Format "02/01/2006 3:4"}}</a>
+    <a href="#" class="btn btn-primary">See Profile</a>
+    <br>
+{{ end }}
+
+{{ define "post-with" }}
+    <div class="jumbotron" post-date-id="{{ .Id }}">
+        {{ template "post-header" . }}
+        <small>
+            {{ template "likes" . }}
+        </small>
+        <small>
+            {{ template "edit" . }}
+        </small>
+        <small>
+            {{ template "delete" . }}
+        </small>
+        <hr class="my-4">
+    </div>
+{{ end }}
+
+{{ define "post-without" }}
+    <div class="jumbotron" post-date-id="{{ .Id }}">
+        {{ template "post-header" . }}
+        <small>{{ template "likes" . }}</small>
+        <hr class="my-4">
+    </div>
+{{ end }}
