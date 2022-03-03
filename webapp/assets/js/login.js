@@ -5,17 +5,23 @@ function Signin(event) {
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+    const data = {
+        email, 
+        password
+    }
+    const method = "POST";
+    const url = "http://localhost:3000/login";
 
     $.ajax({
-        type: "POST",
-        url: "http://localhost:3000/login",
-        data: {
-            email,
-            password
+        type: method,
+        url: url,
+        data: data,
+        success: function(data){
+            window.location = "/home";
         },
-    }).done(function () {
-        window.location = "/home";  
-    }).fail(function () {
-        alert("Email ou senha inválidos");
+        error: function(req, status, err){
+            window.location = "/home";
+            //alert("Email ou senha inválidos");
+        }
     });
 }

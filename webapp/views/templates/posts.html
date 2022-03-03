@@ -13,14 +13,12 @@
 -->
 
 {{ define "likes" }}
-    <a href="/like" style="text-decoration: none;">
-        <i class="fa-solid fa-heart"></i>
-    </a>
+    <i class="fa-solid fa-heart post-liked"></i>
     <span>{{ .Likes }}</span>
 {{ end }}
 
 {{ define "edit" }}   
-    <a href="/edit" style="text-decoration: none;">
+    <a href="/posts/{{ .Id }}/edit" style="text-decoration: none;">
         <i class="fa-solid fa-pen-to-square"></i>
     </a>
 {{ end }}
@@ -40,7 +38,7 @@
 {{ end }}
 
 {{ define "post-with" }}
-    <div class="jumbotron" post-date-id="{{ .Id }}">
+    <div class="jumbotron" data-post-id="{{ .Id }}">
         {{ template "post-header" . }}
         <small>
             {{ template "likes" . }}
@@ -56,7 +54,7 @@
 {{ end }}
 
 {{ define "post-without" }}
-    <div class="jumbotron" post-date-id="{{ .Id }}">
+    <div class="jumbotron" data-post-id="{{ .Id }}">
         {{ template "post-header" . }}
         <small>{{ template "likes" . }}</small>
         <hr class="my-4">

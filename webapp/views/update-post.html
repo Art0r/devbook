@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atualizar Publicação - {{ .Title }}</title>
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+</head>
+<body>
+    {{ template "header" }}
+
+    <div class="container-fluid">
+        <div class="row mt-4">
+            <div class="col-12">
+                <h3>Editar Publicação</h3>
+                <div class="form-group">
+                    <label for="title">Título</label>
+                    <input type="text" class="form-control" id="title" 
+                    name="title" placeholder="Insira o título da publicação" value="{{ .Title }}">
+                </div>
+                <div class="form-group">
+                    <label for="content">Conteúdo</label>
+                    <textarea class="form-control" 
+                    name="content" id="content" cols="30" rows="5">{{ .Content }}</textarea>
+                </div>
+                <br>
+                <button id="update-post" class="btn btn-info" data-post-id="{{ .Id }}">Atualizar Postagem</button>
+            </div>
+        </div>
+    </div>
+
+    {{ template "footer" }}
+    {{ template "scripts" }}
+</body>
+    <script src="/assets/js/createPost.js"></script>
+</html>
