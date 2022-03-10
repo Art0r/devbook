@@ -13,7 +13,6 @@ func CreateUser(rw http.ResponseWriter, r *http.Request) {
 	url := fmt.Sprintf("%s/user", config.ApiUrl)
 	r.ParseForm()
 
-	fmt.Println(url)
 	user, err := json.Marshal(map[string]string{
 		"name":     r.FormValue("name"),
 		"email":    r.FormValue("email"),
@@ -31,7 +30,6 @@ func CreateUser(rw http.ResponseWriter, r *http.Request) {
 		responses.JSON(rw, http.StatusInternalServerError, responses.Error{Error: err.Error()})
 		return
 	}
-
 	defer response.Body.Close()
 
 	if response.StatusCode >= 400 {

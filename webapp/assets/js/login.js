@@ -20,8 +20,7 @@ function Signin(event) {
             window.location = "/home";
         },
         error: function(req, status, err){
-            window.location = "/home";
-            //alert("Email ou senha inválidos");
+            Swal.fire('Erro', 'Email ou senha inválidos', 'error')
         }
     });
 }

@@ -30,25 +30,45 @@ document.getElementById('signup-form').addEventListener("submit", function(event
     $.ajax({
         type: "POST",
         url: url,
-        data: data
-    }).done(() => {
-        alert("Usuário cadastrado com sucesso")
-    }).fail((err) => {
-        console.log(err)
-        alert("Erro ao cadastrar o usuário")
-    });
-
-    /*
-    fetch(url, request)
-    .then(response => response.json())
-    .then((json) => {
-        if (json.error) {
-            alert(json.error);
+        data: data,
+        success: function(){
+            Swal.fire('Sucesso', 'Usuário cadastrado com sucesso', 'success')
+            .then(() => {
+                $.ajax({
+                    url: '/login',
+                    method: 'POST',
+                    data: {
+                        email,
+                        password
+                    },
+                    success: function(){
+                        window.location = "/home";
+                    },
+                    error: function(){
+                        Swal.fire('Erro', 'Erro ao autenticar um usuário', 'error');
+                    }
+                })
+            })
+        },
+        error: function(){
+            Swal.fire('Sucesso', 'Usuário cadastrado com sucesso', 'success')
+            .then(() => {
+                $.ajax({
+                    url: '/login',
+                    method: 'POST',
+                    data: {
+                        email,
+                        password
+                    },
+                    success: function(){
+                        window.location = "/home";
+                    },
+                    error: function(){
+                        Swal.fire('Erro', 'Erro ao autenticar um usuário', 'error');
+                    }
+                })
+            })
         }
-    })
-    .catch(err => {
-        console.log(err);
-        alert("Erro ao cadastrar o usuário");
-    });*/
+    });
 });
 

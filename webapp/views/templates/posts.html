@@ -1,19 +1,5 @@
-<!--
-    <div class="card">
-    <div class="card-body">        
-
-            {{ if (eq .AuthorId $.UserId) }}
-                <small>Like, edit and delete</small>
-            {{ else }}
-                <small>Like</small>
-            {{ end }}
-        
-        </div>        
-    </div>
--->
-
 {{ define "likes" }}
-    <i class="fa-solid fa-heart post-liked"></i>
+    <i class="fa-solid fa-heart post-liked" style="cursor: pointer;"></i>
     <span>{{ .Likes }}</span>
 {{ end }}
 
@@ -24,9 +10,7 @@
 {{ end }}
 
 {{ define "delete" }}
-    <a href="/delete" style="text-decoration: none;">
-        <i class="fa-solid fa-trash text-danger"></i>
-    </a>
+    <i class="fas fa-trash text-danger delete-post" style="cursor: pointer;"></i>
 {{ end }}
 
 {{ define "post-header" }}

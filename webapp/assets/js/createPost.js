@@ -3,7 +3,8 @@ $('#new-post').on('click', createPost);
 $(document).on('click', '.post-liked', likePost);
 $(document).on('click', '.disliked-post', dislikePost);
 
-$('#update-post').on('click', updatePost)
+$('#update-post').on('click', updatePost);
+$('.delete-post').on('click', deletePost);
 
 function createPost(){
 
@@ -101,8 +102,13 @@ function updatePost(){
         url: url,
         data: data,
         success: function(data){
-            alert("Publicação atualizada com sucesso");
-            window.location = "/home";
+            Swal.fire(
+                'Sucesso',
+                'Publicação criada com sucesso',
+                'success'
+            ).then(() => {
+                window.location = "/home";
+            })
         },
         error: function(req, status, err){
             alert("Erro ao atualizar a publicação");
@@ -111,4 +117,39 @@ function updatePost(){
     }).always(function() {
         $('#update-post').prop('disabled', false);
     });
+}
+
+function deletePost(event){
+    event.preventDefault();
+
+    Swal.fire({
+        title: "Atenção",
+        text: "Tem certeza que deseja apagar?",
+        showCancelButton: true,
+        cancelButtonText: "Cancelar",
+        icon: "warning"
+    }).then((confirm) => {
+        if (!confirm.value) return;
+
+        const clicked = $(event.target);
+        const post = clicked.closest('div')
+        const pid = post.data('post-id');
+        
+        clicked.prop('disabled', true);
+
+        $.ajax({
+            type: "DELETE",
+            url: `/posts/${pid}`,
+            success: function (response) {
+                
+
+                post.fadeOut('slow', function(){
+                    $(this).remove();
+                });
+            },
+            error: function(req, status, err){
+                alert("Erro ao excluir a publicação");
+            }
+        });
+    })
 }
