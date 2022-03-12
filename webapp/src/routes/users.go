@@ -24,4 +24,10 @@ var usersRoutes = []Route{
 		Function:    controllers.LoadUserPage,
 		RequireAuth: true,
 	},
+	{
+		URI:         "/users/{id}",
+		Method:      http.MethodGet,
+		Function:    controllers.LoadUserProfile,
+		RequireAuth: true,
+	},
 }
