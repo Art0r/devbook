@@ -27,7 +27,7 @@ func SearchForUser(uid uint64, r *http.Request) (User, error) {
 	chFollowing := make(chan []User)
 	chPosts := make(chan []Post)
 
-	go searchUserData(chUser, uid, r)
+	go SearchUserData(chUser, uid, r)
 	go seachFollowers(chFollowers, uid, r)
 	go seachFollowing(chFollowing, uid, r)
 	go seachPosts(chPosts, uid, r)
@@ -74,7 +74,7 @@ func SearchForUser(uid uint64, r *http.Request) (User, error) {
 	return user, nil
 }
 
-func searchUserData(ch chan<- User, uid uint64, r *http.Request) {
+func SearchUserData(ch chan<- User, uid uint64, r *http.Request) {
 	url := fmt.Sprintf("%s/user/%d", config.ApiUrl, uid)
 	response, err := requests.MakeAuthRequest(r, http.MethodGet, url, nil)
 	if err != nil {
@@ -127,6 +127,11 @@ func seachFollowing(ch chan<- []User, uid uint64, r *http.Request) {
 		return
 	}
 
+	if following == nil {
+		ch <- make([]User, 0)
+		return
+	}
+
 	ch <- following
 }
 
@@ -142,6 +147,11 @@ func seachPosts(ch chan<- []Post, uid uint64, r *http.Request) {
 	var posts []Post
 	if err = json.NewDecoder(response.Body).Decode(&posts); err != nil {
 		ch <- nil
+		return
+	}
+
+	if posts == nil {
+		ch <- make([]Post, 0)
 		return
 	}
 

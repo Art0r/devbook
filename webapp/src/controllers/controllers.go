@@ -62,14 +62,19 @@ func LoadUserProfile(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	cookie, _ := cookies.Read(r)
+	loggedUid, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	if uid == loggedUid {
+		http.Redirect(rw, r, "/profile", http.StatusFound)
+		return
+	}
+
 	user, err := models.SearchForUser(uid, r)
 	if err != nil {
 		responses.JSON(rw, http.StatusInternalServerError, responses.Error{Error: err.Error()})
 		return
 	}
-
-	cookie, _ := cookies.Read(r)
-	loggedUid, _ := strconv.ParseUint(cookie["id"], 10, 64)
 
 	utils.ExecuteTemplate(rw, "user.html", struct {
 		User         models.User
@@ -78,5 +83,34 @@ func LoadUserProfile(rw http.ResponseWriter, r *http.Request) {
 		User:         user,
 		LoggedUserId: loggedUid,
 	})
+}
 
+func LoadLoggedUserProfile(rw http.ResponseWriter, r *http.Request) {
+	cookie, _ := cookies.Read(r)
+	uid, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	user, err := models.SearchForUser(uid, r)
+	if err != nil {
+		fmt.Println(err)
+		responses.JSON(rw, http.StatusInternalServerError, responses.Error{Error: err.Error()})
+		return
+	}
+
+	utils.ExecuteTemplate(rw, "profile.html", user)
+}
+
+func LoadLoggedUserProfileEdit(rw http.ResponseWriter, r *http.Request) {
+	cookie, _ := cookies.Read(r)
+	uid, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	ch := make(chan models.User)
+	go models.SearchUserData(ch, uid, r)
+	user := <-ch
+
+	if user.Id == 0 {
+		responses.JSON(rw, http.StatusInternalServerError, responses.Error{Error: "Erro ao buscar usuário"})
+		return
+	}
+
+	utils.ExecuteTemplate(rw, "edit-user.html", user)
 }

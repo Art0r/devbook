@@ -30,4 +30,34 @@ var usersRoutes = []Route{
 		Function:    controllers.LoadUserProfile,
 		RequireAuth: true,
 	},
+	{
+		URI:         "/users/{id}/unfollow",
+		Method:      http.MethodPost,
+		Function:    controllers.UnfollowUser,
+		RequireAuth: true,
+	},
+	{
+		URI:         "/users/{id}/follow",
+		Method:      http.MethodPost,
+		Function:    controllers.FollowUser,
+		RequireAuth: true,
+	},
+	{
+		URI:         "/profile",
+		Method:      http.MethodGet,
+		Function:    controllers.LoadLoggedUserProfile,
+		RequireAuth: true,
+	},
+	{
+		URI:         "/edit-user",
+		Method:      http.MethodGet,
+		Function:    controllers.LoadLoggedUserProfileEdit,
+		RequireAuth: true,
+	},
+	{
+		URI:         "/edit-user",
+		Method:      http.MethodPut,
+		Function:    controllers.EditUser,
+		RequireAuth: true,
+	},
 }

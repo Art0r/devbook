@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Usuário</title>
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+</head>
+<body>
+    {{ template "header" }}
+    
+    <div class="container-fluid">
+        <div class="row mt-4">
+            <div class="col-12">
+                <h3>Editar Dados</h3>
+                <form id="edit-user">
+                    <input type="hidden" id="uid" name="uid" value="{{ .Id }}">
+                    <div class="form-group">
+                        <label for="name">Nome</label>
+                        <input type="text" class="form-control" id="name" name="name" 
+                        placeholder="Insira seu nome" value="{{ .Name }}" required="required">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="text" class="form-control" id="email" name="email" 
+                        placeholder="Insira seu email" value="{{ .Email }}" required="required">
+                    </div>
+                    <div class="form-group">
+                        <label for="nick">Nick</label>
+                        <input type="text" class="form-control" id="nick" name="nick" 
+                        placeholder="Insira seu nick" value="{{ .Nick }}" required="required">
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-info">Atualizar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    {{ template "scripts" }}
+    {{ template "footer" }}
+    <script src="/assets/js/users.js"></script>
+</body>
+</html>

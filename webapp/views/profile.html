@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Name }}</title>
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+</head>
+<body>
+    {{ template "header" }}
+    
+
+    
+    <div class="container-fluid">
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Meu Perfil
+                        </h5>
+                        <h6 class="card-subtitle">
+                            {{ .Name }} - {{ .Nick }} - Membro desde: {{ .CreatedAt.Format "02/01/2006" }}
+                        </h6>
+                        <p class="card-text">
+                            <a href="#" data-toggle="modal" data-target="#modal-followers">
+                                Seguidores: {{ len .Followers}}
+                            </a>
+                        </p>
+                        <p class="card-text">
+                            <a href="#" data-toggle="modal" data-target="#modal-following">
+                                Seguindo: {{ len .Following }}
+                            </a>
+                        </p>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <a href="/edit-user" class="card-link">
+                                    <button class="btn btn-info">Editar dados</button>
+                                </a>
+                                <a href="/update-password" class="card-link">
+                                    <button class="btn btn-info">Atualizar Senha</button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Publicação do usuário {{ .Nick }}</h5>
+                        <p class="card-text">
+                            {{ range .Posts }}
+                            {{ template "post-with" . }}
+                            {{ else }}
+                        <p class="text-muted text-center">
+                            Nenhuma Publicação por enquanto
+                        </p>
+                        {{ end }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ template "modal-followers" . }}
+    {{ template "modal-following" . }}
+    {{ template "scripts" }}
+    {{ template "footer" }}
+    <script src="/assets/js/createPost.js"></script>
+</body>
+</html>

@@ -16,8 +16,7 @@
 {{ define "post-header" }}
     <h4 class="card-title">{{ .Title }}</h4>
     <p class="card-text">{{ .Content }}</p>
-    <a href="#">{{ .AuthorNick}} - {{ .CreatedAt.Format "02/01/2006 3:4"}}</a>
-    <a href="#" class="btn btn-primary">See Profile</a>
+    <a href="/users/{{ .AuthorId }}">{{ .AuthorNick}}</a>
     <br>
 {{ end }}
 
