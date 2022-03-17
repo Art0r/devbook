@@ -26,6 +26,11 @@ func LoadHomePage(rw http.ResponseWriter, r *http.Request) {
 	defer response.Body.Close()
 
 	if response.StatusCode >= 400 {
+		/*
+			if response.StatusCode == http.StatusUnauthorized {
+				cookies.Delete(rw)
+				LoadHomePage(rw, r)
+			}*/
 		responses.CatchErrorStatusCode(rw, response)
 		return
 	}

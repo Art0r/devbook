@@ -10,8 +10,6 @@
 <body>
     {{ template "header" }}
     
-
-    
     <div class="container-fluid">
         <div class="row mt-4">
             <div class="col-12">
@@ -67,6 +65,12 @@
                 </div>
             </div>
         </div>
+
+        <a id="delete-user" class="card-link">
+            <button class="btn btn-info">
+                Excluir conta permanentemente
+            </button>
+        </a>
     </div>
 
     {{ template "modal-followers" . }}
@@ -74,5 +78,6 @@
     {{ template "scripts" }}
     {{ template "footer" }}
     <script src="/assets/js/createPost.js"></script>
+    <script src="/assets/js/users.js"></script>
 </body>
 </html>

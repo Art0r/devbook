@@ -125,3 +125,55 @@ func EditUser(rw http.ResponseWriter, r *http.Request) {
 
 	responses.JSON(rw, response.StatusCode, nil)
 }
+
+func UpdatePassword(rw http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	password, err := json.Marshal(map[string]string{
+		"this": r.FormValue("oldPassword"),
+		"new":  r.FormValue("newPassword"),
+	})
+	if err != nil {
+		responses.JSON(rw, http.StatusBadRequest, responses.Error{Error: err.Error()})
+		return
+	}
+
+	cookie, _ := cookies.Read(r)
+	uid, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	url := fmt.Sprintf("%s/user/%d/changepassword", config.ApiUrl, uid)
+	res, err := requests.MakeAuthRequest(r, http.MethodPost, url, bytes.NewBuffer(password))
+	if err != nil {
+		responses.JSON(rw, http.StatusInternalServerError, responses.Error{Error: err.Error()})
+		return
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode >= 400 {
+		responses.CatchErrorStatusCode(rw, res)
+		return
+	}
+
+	responses.JSON(rw, res.StatusCode, nil)
+}
+
+func DeleteUser(rw http.ResponseWriter, r *http.Request) {
+	cookie, _ := cookies.Read(r)
+	uid, _ := strconv.ParseUint(cookie["id"], 10, 64)
+
+	url := fmt.Sprintf("%s/user/%d", config.ApiUrl, uid)
+
+	res, err := requests.MakeAuthRequest(r, http.MethodDelete, url, nil)
+	if err != nil {
+		responses.JSON(rw, http.StatusInternalServerError, responses.Error{Error: err.Error()})
+		return
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode >= 400 {
+		responses.CatchErrorStatusCode(rw, res)
+		return
+	}
+
+	responses.JSON(rw, res.StatusCode, nil)
+}
